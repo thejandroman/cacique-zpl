@@ -1,0 +1,9 @@
+RadioSet, DatePicker {
+  border: round;
+}
+Input#lote {
+  border: round;
+}
+DatePicker {
+  height: 5;
+}
