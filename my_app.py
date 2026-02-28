@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from textual.app import App, ComposeResult
 from textual.containers import Center, Container, Horizontal, VerticalScroll
 from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet
@@ -95,6 +97,33 @@ class WhiteLabel(VerticalScroll):
             yield Button("Print", variant="primary")
 
 
+class WhiteLabelTemplate:
+    FIELD_MAP = {
+        "ORIGEN": "origen",
+        "FECHA TUESTE": "fecha_tueste",
+        "NIVEL TUESTE": "nivel_tueste",
+        "PESO": "peso",
+        "LOTE": "lote",
+    }
+    ROAST_LEVEL_MARKER_FO = {
+        "Medium Light": "453,620",
+        "Medium": "531,620",
+        "Medium Dark": "609,620",
+    }
+
+    def __init__(self, template_path: Path | None = None) -> None:
+        self.template_path = template_path or Path(__file__).with_name("white_label_template.zpl")
+
+    def render(self, payload: dict[str, str | None]) -> str:
+        zpl = self.template_path.read_text(encoding="utf-8")
+        for placeholder, key in self.FIELD_MAP.items():
+            value = payload.get(key) or ""
+            zpl = zpl.replace(f"^FD{placeholder}\\&", f"^FD{value}\\&")
+        marker_fo = self.ROAST_LEVEL_MARKER_FO.get(payload.get("nivel_tueste") or "", "531,620")
+        zpl = zpl.replace("^FO531,620\n^GFA", f"^FO{marker_fo}\n^GFA", 1)
+        return zpl
+
+
 class CaciqueZPL(App):
     CSS_PATH = "caciquezpl.tcss"
 
@@ -145,8 +174,9 @@ class CaciqueZPL(App):
             "fecha_tueste": formatted_roast_date if formatted_roast_date else None,
         }
 
-
-        self.notify(payload["fecha_tueste"])
+        zpl_output = WhiteLabelTemplate().render(payload)
+        self.notify("ZPL generated for print")
+        print(zpl_output)
 
 
 if __name__ == "__main__":
