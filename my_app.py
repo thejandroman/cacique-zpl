@@ -1,7 +1,8 @@
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, VerticalScroll, Container, Center
-from textual.widgets import Header, Footer, RadioButton, RadioSet, Label, Input, Button
+from textual.containers import Center, Container, Horizontal, VerticalScroll
+from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet
 from textual_timepiece.pickers import DatePicker
+
 
 class Origen(VerticalScroll):
     def compose(self) -> ComposeResult:
@@ -13,12 +14,14 @@ class Origen(VerticalScroll):
             yield RadioButton("Puerto Rico Maricao")
             yield RadioButton("Puerto Rico Segundas")
 
+
 class FechaTueste(VerticalScroll):
     def compose(self) -> ComposeResult:
         fecha_tueste = DatePicker(id="fecha_tueste")
         fecha_tueste.border_title = "Fecha de Tueste"
         fecha_tueste.border_subtitle = "Roast Date"
         yield fecha_tueste
+
 
 class NivelTueste(VerticalScroll):
     def compose(self) -> ComposeResult:
@@ -30,11 +33,13 @@ class NivelTueste(VerticalScroll):
             yield RadioButton("Medium")
             yield RadioButton("Medium Dark")
 
+
 class Proceso(VerticalScroll):
     def compose(self) -> ComposeResult:
         yield Label("Proceso")
         with RadioSet(id="proceso"):
             yield RadioButton("Washed", True)
+
 
 class Altitud(VerticalScroll):
     def compose(self) -> ComposeResult:
@@ -44,6 +49,7 @@ class Altitud(VerticalScroll):
             yield RadioButton("2200'")
             yield RadioButton("2000'+")
 
+
 class Cata(VerticalScroll):
     def compose(self) -> ComposeResult:
         yield Label("Notas de Cata")
@@ -51,6 +57,7 @@ class Cata(VerticalScroll):
             yield RadioButton("chocolate, honey, peanut butter, lemon-lime")
             yield RadioButton("chocolate, butter, citrus, honey")
             yield RadioButton("cold brew")
+
 
 class Peso(VerticalScroll):
     def compose(self) -> ComposeResult:
@@ -63,12 +70,14 @@ class Peso(VerticalScroll):
             yield RadioButton("12 oz")
             yield RadioButton("5 lb")
 
+
 class Lote(VerticalScroll):
     def compose(self) -> ComposeResult:
         lote = Input(id="lote", type="integer")
         lote.border_title = "No. de Lote"
         lote.border_subtitle = "Batch No."
         yield lote
+
 
 class WhiteLabel(VerticalScroll):
     def compose(self) -> ComposeResult:
@@ -85,6 +94,7 @@ class WhiteLabel(VerticalScroll):
         with Center():
             yield Button("Print", variant="primary")
 
+
 class CaciqueZPL(App):
     CSS_PATH = "caciquezpl.tcss"
 
@@ -97,7 +107,7 @@ class CaciqueZPL(App):
                 yield RadioButton("White label")
                 yield RadioButton("Red label")
             yield Container(id="label")
-        yield Footer ()
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one(RadioSet).focus()
@@ -113,6 +123,7 @@ class CaciqueZPL(App):
             self.query_one("#label").remove_children()
             self.query_one("#label").mount(new_unsupported_label)
             new_unsupported_label.scroll_visible()
+
 
 if __name__ == "__main__":
     app = CaciqueZPL()
