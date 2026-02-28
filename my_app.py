@@ -65,10 +65,10 @@ class Peso(VerticalScroll):
         peso.border_title = "Peso"
         peso.border_subtitle = "Weight"
         with peso:
-            yield RadioButton("2.5 oz")
-            yield RadioButton("4 oz")
-            yield RadioButton("12 oz")
-            yield RadioButton("5 lb")
+            yield RadioButton("2.5 oz | 71 g")
+            yield RadioButton("4 oz | 113 g")
+            yield RadioButton("12 oz | 340 g")
+            yield RadioButton("5 lb | 2.2 kg")
 
 
 class Lote(VerticalScroll):
