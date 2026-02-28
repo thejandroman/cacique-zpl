@@ -124,6 +124,30 @@ class CaciqueZPL(App):
             self.query_one("#label").mount(new_unsupported_label)
             new_unsupported_label.scroll_visible()
 
+    def _selected_radio(self, selector: str) -> str | None:
+        rs = self.query_one(selector, RadioSet)
+        return str(rs.pressed_button.label) if rs.pressed_button else None
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if str(event.button.label) != "Print":
+            return
+
+        picker = self.query_one("#fecha_tueste", DatePicker)
+        roast_date = getattr(picker, "date", getattr(picker, "value", None))
+        formatted_roast_date = roast_date.py_date().strftime("%d • %m • %Y") if roast_date else None
+
+        payload = {
+            "label_type": self._selected_radio("#label_select"),
+            "origen": self._selected_radio("#origen"),
+            "nivel_tueste": self._selected_radio("#nivel_tueste"),
+            "peso": self._selected_radio("#peso"),
+            "lote": self.query_one("#lote", Input).value,
+            "fecha_tueste": formatted_roast_date if formatted_roast_date else None,
+        }
+
+
+        self.notify(payload["fecha_tueste"])
+
 
 if __name__ == "__main__":
     app = CaciqueZPL()
