@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from textual.app import App, ComposeResult
-from textual.containers import Center, Container, Horizontal, VerticalScroll
+from textual.containers import Center, Horizontal, VerticalScroll
 from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet
 from textual_timepiece.pickers import DatePicker
 
@@ -135,7 +135,7 @@ class CaciqueZPL(App):
             with label_select:
                 yield RadioButton("White label")
                 yield RadioButton("Red label")
-            yield Container(id="label")
+            yield VerticalScroll(id="label")
         yield Footer()
 
     def on_mount(self) -> None:
