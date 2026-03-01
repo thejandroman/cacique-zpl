@@ -7,3 +7,18 @@ Input#lote {
 DatePicker {
   height: 5;
 }
+#label_select {
+  margin-bottom: 1;
+}
+#label {
+  margin-top: 1;
+  padding-top: 1;
+}
+#label VerticalScroll,
+#label Horizontal,
+#label Center {
+  height: auto;
+}
+#label > WhiteLabel > * {
+  margin-bottom: 1;
+}
