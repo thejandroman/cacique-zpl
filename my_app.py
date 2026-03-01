@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 
 from textual.app import App, ComposeResult
 from textual.containers import Center, Horizontal, VerticalScroll
@@ -175,8 +176,18 @@ class CaciqueZPL(App):
         }
 
         zpl_output = WhiteLabelTemplate().render(payload)
-        self.notify("ZPL generated for print")
-        print(zpl_output)
+        try:
+            subprocess.run(
+                ["lpr", "-P", "ZTC-ZD420-300dpi-ZPL", "-o", "raw"],
+                input=zpl_output,
+                text=True,
+                check=True,
+            )
+            self.notify("Label sent to printer")
+        except FileNotFoundError:
+            self.notify("lpr command not found", severity="error")
+        except subprocess.CalledProcessError as exc:
+            self.notify(f"Printer command failed ({exc.returncode})", severity="error")
 
 
 if __name__ == "__main__":
