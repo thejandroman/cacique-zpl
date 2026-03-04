@@ -105,6 +105,7 @@ class WhiteLabelTemplate:
         "FECHA TUESTE": "fecha_tueste",
         "NIVEL TUESTE": "nivel_tueste",
         "CATA": "cata",
+        "ALTITUD": "altitud",
         "PESO": "peso",
         "LOTE": "lote",
     }
@@ -117,6 +118,11 @@ class WhiteLabelTemplate:
         "Medium Light": "453,620",
         "Medium": "531,620",
         "Medium Dark": "609,620",
+    }
+    ALTITUD_BY_ORIGEN = {
+        "Puerto Rico Yauco": "2000'",
+        "Puerto Rico Maricao": "2200'",
+        "Puerto Rico Segundas": "2000' +",
     }
 
     def __init__(self, template_path: Path | None = None) -> None:
@@ -204,12 +210,14 @@ class CaciqueZPL(App):
 
         origen = self._selected_radio("#origen")
         cata = WhiteLabelTemplate.CATA_BY_ORIGEN.get(origen or "", None)
+        altitud = WhiteLabelTemplate.ALTITUD_BY_ORIGEN.get(origen or "", None)
 
         payload = {
             "label_type": self._selected_radio("#label_select"),
             "origen": origen,
             "nivel_tueste": self._selected_radio("#nivel_tueste"),
             "cata": cata,
+            "altitud": altitud,
             "peso": self._selected_radio("#peso"),
             "lote": self.query_one("#lote", Input).value,
             "fecha_tueste": formatted_roast_date if formatted_roast_date else None,
