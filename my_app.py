@@ -104,8 +104,14 @@ class WhiteLabelTemplate:
         "ORIGEN": "origen",
         "FECHA TUESTE": "fecha_tueste",
         "NIVEL TUESTE": "nivel_tueste",
+        "CATA": "cata",
         "PESO": "peso",
         "LOTE": "lote",
+    }
+    CATA_BY_ORIGEN = {
+        "Puerto Rico Yauco": "chocolate, honey, peanut butter, lemon-lime",
+        "Puerto Rico Maricao": "chocolate, butter, citrus, honey",
+        "Puerto Rico Segundas": "cold brew",
     }
     ROAST_LEVEL_MARKER_FO = {
         "Medium Light": "453,620",
@@ -196,10 +202,14 @@ class CaciqueZPL(App):
         roast_date = getattr(picker, "date", getattr(picker, "value", None))
         formatted_roast_date = roast_date.py_date().strftime("%d • %m • %Y") if roast_date else None
 
+        origen = self._selected_radio("#origen")
+        cata = WhiteLabelTemplate.CATA_BY_ORIGEN.get(origen or "", None)
+
         payload = {
             "label_type": self._selected_radio("#label_select"),
-            "origen": self._selected_radio("#origen"),
+            "origen": origen,
             "nivel_tueste": self._selected_radio("#nivel_tueste"),
+            "cata": cata,
             "peso": self._selected_radio("#peso"),
             "lote": self.query_one("#lote", Input).value,
             "fecha_tueste": formatted_roast_date if formatted_roast_date else None,
