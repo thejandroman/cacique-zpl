@@ -1,9 +1,10 @@
 """Tests for the main CaciqueZPL app."""
 import pytest
 from textual.app import App
-from textual.widgets import Button, Label, RadioButton, RadioSet
+from textual.widgets import Button, RadioButton, RadioSet
 
 from my_app import CaciqueZPL
+from red_label import RedLabel
 from white_label import WhiteLabel
 
 
@@ -96,8 +97,8 @@ class TestWhiteLabelSelection:
 class TestRedLabelSelection:
     """Tests for red label selection behavior."""
 
-    async def test_selecting_red_label_shows_unsupported_message(self) -> None:
-        """Test that selecting red label shows unsupported message."""
+    async def test_selecting_red_label_shows_red_label_widget(self) -> None:
+        """Test that selecting red label shows the RedLabel widget."""
         app = CaciqueZPL()
         async with app.run_test() as pilot:
             radio_set = app.query_one("#label_select", RadioSet)
@@ -113,13 +114,46 @@ class TestRedLabelSelection:
             await pilot.pause()
 
             label_container = app.query_one("#label")
-            # Should have a label (not WhiteLabel) when red label is selected
-            # This verifies the red label selection path works
-            labels = label_container.query(Label)
-            assert len(labels) >= 1
+            # Should have a RedLabel widget when red label is selected
+            red_label = label_container.query_one(RedLabel)
+            assert red_label is not None
             # Should NOT have a WhiteLabel when red label is selected
             white_labels = label_container.query(WhiteLabel)
             assert len(white_labels) == 0
+
+    async def test_red_label_has_required_widgets(self) -> None:
+        """Test that RedLabel contains all required widgets."""
+        app = CaciqueZPL()
+        async with app.run_test() as pilot:
+            # Select red label
+            radio_set = app.query_one("#label_select", RadioSet)
+            radio_set.focus()
+            await pilot.pause()
+            radio_buttons = radio_set.query(RadioButton)
+            radio_buttons[1].value = True
+            radio_set._selected = 1
+            await pilot.pause()
+
+            label_container = app.query_one("#label")
+            red_label = label_container.query_one(RedLabel)
+
+            # Check for origen radio set
+            assert red_label.query_one("#origen", RadioSet) is not None
+
+            # Check for nivel tueste radio set
+            assert red_label.query_one("#nivel_tueste", RadioSet) is not None
+
+            # Check for peso radio set
+            assert red_label.query_one("#peso", RadioSet) is not None
+
+            # Check for lote input
+            assert red_label.query_one("#lote") is not None
+
+            # Check for print button
+            print_button = red_label.query_one("#print", Button)
+            assert print_button is not None
+            # Print button should be disabled by default
+            assert print_button.disabled is True
 
 
 class TestPrintButtonState:

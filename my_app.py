@@ -3,10 +3,11 @@ import subprocess
 from textual.app import App, ComposeResult
 from textual.containers import VerticalScroll
 from textual.css.query import NoMatches
-from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet
+from textual.widgets import Button, Footer, Header, Input, RadioButton, RadioSet
 from textual_timepiece.pickers import DatePicker
 
 
+from red_label import RedLabel, RedLabelTemplate
 from white_label import WhiteLabel, WhiteLabelTemplate
 
 
@@ -55,10 +56,10 @@ class CaciqueZPL(App):
             self.query_one("#label").mount(new_white_label)
             new_white_label.scroll_visible()
         elif event.pressed.label == "Red label":
-            new_unsupported_label = Label("Red label is currently unsupported")
+            new_red_label = RedLabel()
             self.query_one("#label").remove_children()
-            self.query_one("#label").mount(new_unsupported_label)
-            new_unsupported_label.scroll_visible()
+            self.query_one("#label").mount(new_red_label)
+            new_red_label.scroll_visible()
         self._sync_print_button_disabled()
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -81,11 +82,18 @@ class CaciqueZPL(App):
         formatted_roast_date = roast_date.py_date().strftime("%d • %m • %Y") if roast_date else None
 
         origen = self._selected_radio("#origen")
-        cata = WhiteLabelTemplate.CATA_BY_ORIGEN.get(origen or "", None)
-        altitud = WhiteLabelTemplate.ALTITUD_BY_ORIGEN.get(origen or "", None)
+        label_type = self._selected_radio("#label_select")
+        
+        # Use the appropriate template based on label selection
+        if label_type == "Red label":
+            cata = RedLabelTemplate.CATA_BY_ORIGEN.get(origen or "", None)
+            altitud = RedLabelTemplate.ALTITUD_BY_ORIGEN.get(origen or "", None)
+        else:
+            cata = WhiteLabelTemplate.CATA_BY_ORIGEN.get(origen or "", None)
+            altitud = WhiteLabelTemplate.ALTITUD_BY_ORIGEN.get(origen or "", None)
 
         payload = {
-            "label_type": self._selected_radio("#label_select"),
+            "label_type": label_type,
             "origen": origen,
             "nivel_tueste": self._selected_radio("#nivel_tueste"),
             "cata": cata,
@@ -95,7 +103,11 @@ class CaciqueZPL(App):
             "fecha_tueste": formatted_roast_date if formatted_roast_date else None,
         }
 
-        zpl_output = WhiteLabelTemplate().render(payload)
+        # Use the appropriate template based on label selection
+        if label_type == "Red label":
+            zpl_output = RedLabelTemplate().render(payload)
+        else:
+            zpl_output = WhiteLabelTemplate().render(payload)
         try:
             subprocess.run(
                 ["lpr", "-P", "ZTC-ZD420-300dpi-ZPL", "-o", "raw"],
