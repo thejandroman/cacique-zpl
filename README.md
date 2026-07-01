@@ -12,6 +12,13 @@ pip install -r requirements.txt
 python my_app.py
 ```
 
+## Testing
+
+```bash
+source myenv/bin/activate
+python -m pytest tests/ -v
+```
+
 ## Useful links
 
 - [zebra-dl-font](https://github.com/kengreim/zebra-dl-font)
