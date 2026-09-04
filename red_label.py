@@ -70,6 +70,7 @@ class Peso(VerticalScroll):
             yield RadioButton("2.5 oz | 71 g")
             yield RadioButton("4 oz | 113 g")
             yield RadioButton("12 oz | 340 g")
+            yield RadioButton("1 lb | 454 g")
             yield RadioButton("5 lb | 2.2 kg")
 
 
