@@ -14,7 +14,7 @@ class Origen(VerticalScroll):
         with origen:
             yield RadioButton("Puerto Rico Yauco")
             yield RadioButton("Puerto Rico Maricao")
-            yield RadioButton("Puerto Rico Segundas")
+            yield RadioButton("Cold Brew Blend")
 
 
 class FechaTueste(VerticalScroll):
@@ -58,7 +58,7 @@ class Cata(VerticalScroll):
         with RadioSet(id="cata"):
             yield RadioButton("chocolate, honey, peanut butter, lemon-lime")
             yield RadioButton("chocolate, butter, citrus, honey")
-            yield RadioButton("cold brew")
+            yield RadioButton("chocolate, caramel, brown sugar")
 
 
 class Peso(VerticalScroll):
@@ -111,7 +111,7 @@ class RedLabelTemplate:
     CATA_BY_ORIGEN = {
         "Puerto Rico Yauco": "chocolate, honey, peanut butter, lemon-lime",
         "Puerto Rico Maricao": "chocolate, butter, citrus, honey",
-        "Puerto Rico Segundas": "cold brew",
+        "Cold Brew Blend": "chocolate, caramel, brown sugar",
     }
     ROAST_LEVEL_MARKER_FO = {
         "Medium Light": "684,650",
@@ -121,7 +121,7 @@ class RedLabelTemplate:
     ALTITUD_BY_ORIGEN = {
         "Puerto Rico Yauco": "2000'",
         "Puerto Rico Maricao": "2200'",
-        "Puerto Rico Segundas": "2000' +",
+        "Cold Brew Blend": "2000' +",
     }
 
     def __init__(self, template_path: Path | None = None) -> None:
